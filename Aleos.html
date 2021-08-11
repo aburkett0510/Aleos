@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<script src="https://unpkg.com/tone"></script>
+    <script src="music.js"></script>
+
+<html lang="en">
+    <head>
+        <title>Aleos</title>
+        <meta charset="UTF-8" />
+        <style>
+            body{
+                background-color:black;
+                color:white;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <label for="C-note">C (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="C4" name="C-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+       <label for="D-note">D (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="D4" name="D-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+       <label for="E-note">E (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="E4" name="E-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+       <label for="F-note">F (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="F4" name="F-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+       <label for="G-note">G (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="G4" name="G-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+       <label for="A-note">A (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="A4" name="A-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+       <label for="B-note">B (0-100):</label>
+
+<input value = "50" max = "100" min = "0" type="number" id="B4" name="B-note" required class = "note"
+       minlength="0" maxlength="3" size="10" onchange = "updateNote(this.id,this.value)">
+
+        <label for="stepprob">Step Probability (0-100)</label>
+<input value = "75" max = "100" min = "0" type="number" id="stepprob" name="stepprob" required
+        minlength="0" maxlength="3" size="10" onchange = "updateProb(this.value)">
+
+        <label for="tempo">Tempo (BPM):</label>
+
+<select name="tempo" id="tempo" onchange = "bpm(this.value)">
+            <option value="60">60</option>
+            <option value="80">80</option>
+            <option value="100">100</option>
+            <option value="120">120</option>
+            <option value="140">140</option>
+            <option value="160">160</option>
+</select>
+
+<input type="submit" value = "play" id="Play-button">
+
+<input type="submit" value = "stop" id="Stop-button">
+
+
+<script type="text/javascript">
+        //create a synth and connect it to the main output (your speakers)
+        const synth = new Tone.Synth().toDestination();
+
+        const notes = Array.from(document.querySelectorAll('.note'));
+
+        var noteprob = {};
+        notes.forEach(note => noteprob[note.id]=note.value);
+
+        var ms = 1000 * 60 / document.getElementById("tempo").value;
+
+        var flag = 0;
+
+        var interval = setInterval(checkNote,ms);
+
+        var stepprob = document.getElementById("stepprob").value;
+
+        function bpm(speed)
+        {
+            clearInterval(interval);
+            ms = 1000 * 60 / speed;
+            interval = setInterval(checkNote,ms);
+        }
+
+        function updateNote(id,value)
+        {
+            noteprob[id] = value;
+        }
+
+        function updateProb(value)
+        {
+            stepprob = value;
+        }
+
+        function checkNote()
+        {
+            if (flag == 1)
+            {
+                let r = Math.floor(Math.random() * 100);
+                if (r <= stepprob)
+                {
+                    notes.some(function(note)
+                    {
+                        r = Math.floor(Math.random() * 100);
+                        if (r <= noteprob[note.id])
+                        {
+                            synth.triggerAttackRelease(note.id, "8n");
+                            return true;
+                        }
+                    })
+                }
+            }
+        }
+        
+    document.getElementById("Play-button").addEventListener("click",function() //Runs code when button is pressed
+        {
+            flag = 1;
+            ms = 1000 * 60 / document.getElementById("tempo").value;
+        });
+    document.getElementById("Stop-button").addEventListener("click",function() //Runs code when button is pressed
+        {
+            flag = 0; 
+        });
+</script>
+    </body>
+</html>
